@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Plus Jakarta Sans", "sans-serif";
+}
+@layer utilities {
+  .button-primary {
+    @apply bg-gray-900 cursor-pointer text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-all duration-300 ease-in-out;
+  }
+  .button-secondary {
+    @apply inline-flex items-center cursor-pointer bg-gray-900 text-white px-6 py-3 rounded-lg text-lg hover:bg-gray-800 transition-all duration-500 ease-in-out;
+  }
+  .button-plain {
+    @apply inline-flex items-center cursor-pointer bg-gray-200 text-gray-900 px-6 py-3 rounded-lg text-lg hover:bg-gray-800 hover:text-white transition-all duration-500 ease-in-out;
+  }
+  .input-primary {
+    @apply bg-gray-100 px-4 py-2 rounded-lg border  border-gray-300 focus:outline-none focus:border-gray-400 text-gray-800 tracking-wide;
+  }
+  .button-route {
+    @apply  px-2 py-1 rounded-lg cursor-pointer text-lg ;
+  }
+}
+.loader {
+  width: 80px;
+  aspect-ratio: 1;
+  border: 10px solid #000;
+  box-sizing: border-box;
+  background: 
+    radial-gradient(farthest-side,#fff 100%,#0000) top,
+    radial-gradient(farthest-side,#fff 100%,#0000) top,
+    radial-gradient(farthest-side,#fff 100%,#0000) left,
+    radial-gradient(farthest-side,#fff 100%,#0000) right,
+    radial-gradient(farthest-side,#fff 100%,#0000) bottom,
+    #000;
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  filter: blur(4px) contrast(10); 
+  animation: l19 2s infinite;
+}
+@keyframes l19 {
+  0%   {background-position:top,top,left,right,bottom}
+  25%  {background-position:right,top,left,right,bottom}
+  50%  {background-position:bottom,top,left,right,bottom}
+  75%  {background-position:left,top,left,right,bottom}
+  100% {background-position:top,top,left,right,bottom}
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
