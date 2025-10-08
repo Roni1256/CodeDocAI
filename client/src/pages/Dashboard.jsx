@@ -63,7 +63,7 @@ const Dashboard = () => {
             </button>
             <div className="">
               <button
-                className={`bg-blue-900 text-white rounded-full w-[40px]  h-[40px] lg:w-[50px] lg:h-[50px] flex items-center justify-center cursor-pointer text-lg lg:text-2xl hover:border-4 hover:border-blue-200 ${
+                className={`bg-blue-900 text-white rounded-full w-[30px]  h-[30px] lg:w-[40px] lg:h-[40px] flex items-center justify-center cursor-pointer text-lg lg:text-2xl hover:border-4 hover:border-blue-200 ${
                   isProfile ? "border-4 border-blue-200" : ""
                 }`}
                 onClick={() => setProfile(!isProfile)}
@@ -73,7 +73,7 @@ const Dashboard = () => {
               {isProfile && (
                 <div className=" rounded-lg bg-white absolute right-3 top-18 overflow-hidden border border-gray-400">
                   <button
-                    className="text-red-500 hover:text-red-700 flex items-center justify-center w-full px-20 py-3 gap-5 text-lg hover:bg-gray-50 duration-300 transition-all ease-in-out border-b border-gray-300 cursor-pointer"
+                    className="text-red-500 hover:text-red-700 flex items-center justify-center w-full px-20 py-3 gap-5 text-md hover:bg-gray-50 duration-300 transition-all ease-in-out border-b border-gray-300 cursor-pointer"
                     onClick={() => logout()}
                   >
                     Logout <LogOut />

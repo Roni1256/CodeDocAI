@@ -43,27 +43,7 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const VerificationSchema=new mongoose.Schema({
-    userId:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'User',
-        required:true
-    },
-    code:{
-        type:Number,
-        required:true,
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    expiresAt: {
-        type: Date,
-        required: true
-    }
-})
 
-export const Verification=mongoose.model('Verification',VerificationSchema)
 
 const User = mongoose.model('User',UserSchema)
 

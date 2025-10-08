@@ -109,7 +109,6 @@ export async function resendCode(req, res) {
 export async function getCurrentUser(req, res) {
   try {
     const { codeDocToken } = req.cookies;
-    console.log(codeDocToken);
     if (!codeDocToken) {
       return res.status(400).json({ message: "Not Authorized" });
     }

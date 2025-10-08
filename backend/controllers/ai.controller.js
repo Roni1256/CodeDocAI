@@ -65,8 +65,9 @@ export async function generateContent(req, res) {
 
      const newProject=new Project({
       project_name:project.project_name,
-      project_description:project_description,
+      project_description:project.project_description,
       prompt:project.prompt,
+      userId:userId
       
     })
     const savedProject=await newProject.save();
@@ -94,7 +95,8 @@ export async function generateContent(req, res) {
           file_name:filename,
           file_type:element.fileType,
           file_content:content,
-          output_content:response
+          output_content:response,
+          projectId:savedProject._id
         })
         const savedFile=await newFile.save();
 
@@ -130,5 +132,49 @@ export async function generateContent(req, res) {
   } catch (error) {
     console.error("Unexpected error:", error);
     return res.status(500).json({ message: "Unable to Generate content", error });
+  }
+}
+
+export async function saveProject(req,res){
+  try {
+    const { project} = req.body;
+    const {userId}=req.params 
+    console.log("Entered Generation");
+    if(!userId){
+      return res.status(400).json({message:"Bad request"})
+    }
+    const user=await User.findById(userId)
+    if(!user){
+      return res.status(404).json({message:"User not found"});
+    }
+
+     const newProject=new Project({
+      project_name:project.project_name,
+      project_description:project.project_description,
+      prompt:project.prompt,
+      userId:userId
+      
+    })
+    const savedProject=await newProject.save();
+    user.projects.push(savedProject._id)
+    await user.save();
+    return res.status(200).json({message:"Project Saved Successfully",savedProject})
+  } catch (error) {
+    return res.status(500).json({message:"Internal Server Error",error})
+  }
+}
+
+export async function generateFile(req,res){
+  try {
+
+    const {filename,fileType,fileContent}=req.body;
+    const {projectId}=req.params;
+    if(!projectId)
+      return res.status(401).json({message:"Unauthorized"});
+    if(!filename || !fileType || !fileContent)
+      return res.status(400).json({message:"Missing Credentials"});
+    
+  } catch (error) {
+    return res.status(500).json({message:"Internal Server Error",error})
   }
 }
