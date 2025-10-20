@@ -4,7 +4,7 @@ import React, { useContext, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { data, useNavigate } from "react-router-dom";
 import { axiosInstance } from "../utils/axiosInstance.js";
-import { UserContext } from "../App.jsx";
+import { LoaderContext, UserContext } from "../App.jsx";
 
 export default function Authentication() {
   const [formStatus, setFormStatus] = useState("register");
@@ -15,6 +15,7 @@ export default function Authentication() {
     confirmPassword: "",
     terms: false,
   });
+  const [loading,setLoading]=useContext(LoaderContext)
   const [processStatus, setProcessStatus] = useState({
     state: "idle",
     message: "",
@@ -30,10 +31,12 @@ export default function Authentication() {
 
   async function authenticate(e) {
     e.preventDefault()
+    setLoading(true)
     if (
       formStatus === "register" &&
       inputDetails.password !== inputDetails.confirmPassword
     ) {
+      setLoading(false)
       return setProcessStatus({ state: "error", message: "Password Mismatch" });
     }
 
@@ -49,6 +52,7 @@ export default function Authentication() {
           registerData
         );
         console.log(response.data);
+        setLoading(false)
         navigate("/verification", { state: { email: response.data.email,username:response.data.username } });
       }else{
         const loginDataObj={
@@ -58,9 +62,11 @@ export default function Authentication() {
         const resp=await axiosInstance.post('/authentication/login',loginDataObj);
         console.log(resp.data);
         setUser(resp.data.returningObj)
+        setLoading(false)
         navigate('/dashboard')
       }
     } catch (error) {
+      setLoading(false)
       console.log(error);
     }
   }

@@ -25,6 +25,7 @@ const projectSchema = new mongoose.Schema(
         type: mongoose.Schema.Types.ObjectId,
         ref: "File",
       },
+      
     ],
     userId: {
       type: mongoose.Schema.Types.ObjectId,

@@ -1,37 +1,44 @@
 import { Brain, Home, LogOut, User2 } from "lucide-react";
 import React, { lazy, useContext, useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { UserContext } from "../App";
+import { LoaderContext, UserContext } from "../App";
 import { axiosInstance } from "../utils/axiosInstance";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [user, setUser] = useContext(UserContext);
+  const [loading,setLoading]=useContext(LoaderContext)
   const [isProfile, setProfile] = useState(false);
   async function getUser() {
     try {
+      setLoading(true)
       const resp = await axiosInstance.get("/authentication/current-user");
       setUser(resp.data.user);
+      setLoading(false)
     } catch (error) {
+      setLoading(false)
       console.log(error);
     }
   }
   async function logout() {
     try {
+      setLoading(true)
       const resp = await axiosInstance.get("/authentication/logout");
       console.log(resp);
-
       location.reload();
+      setLoading(false)
       navigate("/");
     } catch (error) {
+      setLoading(false)
       console.log(error);
     }
   }
   useEffect(() => {
     getUser();
+    setLoading(false)
   }, []);
   return (
-    <div className="h-full w-full bg-gray-200 lg:p-5 flex flex-col lg:flex-row gap-2">
+    <div className="h-full w-full bg-gray-200  flex flex-col lg:flex-row gap-2">
       <div className="h-full  bg-white lg:rounded-xl w-full relative">
         <div className="flex items-center justify-between px-10 ">
           <h1 className="px-8 py-6 text-2xl font-semibold text-neutral-600">

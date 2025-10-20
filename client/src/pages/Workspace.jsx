@@ -5,6 +5,13 @@ import Loader from "../components/Loader";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../App";
+import { axiosInstance } from "../utils/axiosInstance";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import rehypeHighlight from "rehype-highlight";
+import "highlight.js/styles/github.css"; // GitHub style for code blocks
+import "../markdownStyles.css";
 const Workspace = () => {
   const navigate = useNavigate();
   const [isFullScreen, setFullScreen] = useState(false);
@@ -16,7 +23,9 @@ const Workspace = () => {
   const [fileContents, setFileContents] = useState([]);
   const [currentSection, setCurrentSection] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [user,setUser]=useContext(UserContext)
+  const [user, setUser] = useContext(UserContext);
+  const [responses, setResponses] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
   async function uploadFile(e) {
     try {
       let files = e.target.files || {};
@@ -61,26 +70,34 @@ const Workspace = () => {
     const { name, value } = e.target;
     setData((prev) => ({ ...prev, [name]: value }));
   }
+  
   async function generate() {
     try {
       setLoading(true);
-      const detailsObj = {
-        project: data,
-        file: fileContents,
-      };
-      const response = await axios.post(
-        `http://localhost:5000/api/ai/generate-content/${user._id}`,
-        detailsObj
-      );
-      console.log(response);
-      setLoading(false);
-      navigate(`generate/name`, { state: { data: response.data.resultArray } });
+      console.log("Started Generation");
 
-      console.log(detailsObj);
+      const projectResp = await axiosInstance.post(
+        `/ai/save-project/${user._id}`,
+        data
+      );
+      const projectId = projectResp.data.savedProject._id;
+      const projectPrompt = projectResp.data.savedProject.prompt;
+      console.log("Got Response:", projectResp.data);
+      for (let index = 0; index < fileContents.length; index++) {
+        const element = fileContents[index];
+        const fileResp = await axiosInstance.post(
+          `/ai/save-file/${projectId}`,
+          { element, projectPrompt }
+        );
+        ``;
+        console.log("File response:" + element.filename, fileResp);
+        setResponses([...responses, fileResp.data.savedFile]);
+        setLoading(false);
+      }
+      console.log("Generation Completed");
     } catch (error) {
       setLoading(false);
       console.log(error);
-      
     }
   }
 
@@ -98,6 +115,39 @@ const Workspace = () => {
     } else if (currentSection === 1) {
       setCurrentSection(2);
     }
+  }
+
+  if (responses.length) {
+    return (
+      <div className="flex gap-20">
+        <nav className="flex flex-col h-screen w-1/5 border-r-2 border-r-gray-200  gap-3 py-10 px-2">
+          {responses.map((element, i) => {
+            return (
+              <button
+                className={`w-full bg-gray-50 px-3 text-left py-4 rounded-lg border hover:bg-gray-200   text-gray-500 ${
+                  currentIndex == i
+                    ? "border-gray-400 text-gray-8007"
+                    : "border-gray-200"
+                } duration-300 ease-in-out transition-all cursor-pointer`}
+                onClick={() => {
+                  setCurrentIndex(i);
+                }}
+                key={i}
+              >
+                {element.file_name}
+              </button>
+            );
+          })}
+        </nav>
+        <div className="markdown-container p-20 text-wrap max-w-1/2 h-screen overflow-auto scrollbar-hide ">
+          <ReactMarkdown
+            children={responses[currentIndex].file_content}
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeRaw, rehypeHighlight]}
+          />
+        </div>
+      </div>
+    );
   }
 
   return (
