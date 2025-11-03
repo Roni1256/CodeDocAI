@@ -122,39 +122,51 @@ export async function getCurrentUser(req, res) {
       return res.status(401).json({ error: "User not found" });
     }
 
-    return res.status(200).json({message:"User retrieved",user})
+    return res.status(200).json({ message: "User retrieved", user });
   } catch (error) {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 }
-export async function login(req,res) {
+export async function login(req, res) {
   try {
-    const {email,password}=req.body;
-    if(!email || !password) return res.status(401).json({message:"Missing Credentials"})
+    const { email, password } = req.body;
+    if (!email || !password)
+      return res.status(401).json({ message: "Missing Credentials" });
+    console.log("Step-1");
 
-    const user=await User.findOne({email:email})
-    if(!user){
-      return res.status(404).json({message:"User not found"});
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
-    const isPasswordMatch=await bcrypt.compare(password,user.password);
-    if(!isPasswordMatch){
-      return res.status(401).json({message:"Password Mismatch"});
+    console.log("Step-2");
+
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatch) {
+      return res.status(401).json({ message: "Password Mismatch" });
     }
-    const returningObj={
-      email:user.email,
-      username:user.username,
-      id:user._id
-    }
-    const jwtToken=jwt.sign({id:user._id},process.env.JWT_SECRET,{expiresIn:"30d"})
-    res.cookie("codeDocToken",jwtToken,{
-     httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+    console.log("Step-3");
+
+    const returningObj = {
+      email: user.email,
+      username: user.username,
+      id: user._id,
+    };
+    const jwtToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "30d",
+    });
+    console.log("Step-4");
+
+    res.cookie("codeDocToken", jwtToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV == "production",
       sameSite: "strict",
       maxAge: 30 * 24 * 60 * 60 * 1000,
-    })
-    return res.status(200).json({message:"Login success",returningObj})
+    });
+    console.log("Step-5");
+
+    return res.status(200).json({ message: "Login success", returningObj });
   } catch (error) {
-    return res.status(500).json({message:"Internal Server Error"})
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 }
 
@@ -162,8 +174,8 @@ export async function logout(req, res) {
   try {
     res.clearCookie("codeDocToken", {
       httpOnly: true,
-      secure: true, 
-      sameSite: "none", 
+      secure: true,
+      sameSite: "none",
     });
 
     return res.status(200).json({ message: "Logout successful!" });
@@ -172,10 +184,7 @@ export async function logout(req, res) {
   }
 }
 
-export async function forgotPassword(req,res){
+export async function forgotPassword(req, res) {
   try {
-    
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 }
