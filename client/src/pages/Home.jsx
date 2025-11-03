@@ -4,10 +4,20 @@ import { axiosInstance } from "../utils/axiosInstance";
 import { useState } from "react";
 import { useEffect } from "react";
 import Loader from "../components/Loader";
-import { Folder, FolderPlus, Plus } from "lucide-react";
+import {
+  Folder,
+  Plus,
+  Edit,
+  Trash2,
+  FileText,
+  CalendarDays,
+  Clock,
+} from "lucide-react";
+
 import { useNavigate } from "react-router-dom";
 import ProjectDetailsEditor from "../components/ProjectDetailsEditor";
 import DeletionPop from "../components/DeletionPop";
+import { CurrentProjectContext } from "./Dashboard";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -19,7 +29,7 @@ const Home = () => {
   const [respFile, setRespFile] = useState([]);
   const [editor, setEditor] = useState(false);
   const [deletion, setDeletion] = useState(false);
-
+  const [currentProject, setCurrentProject] = useContext(CurrentProjectContext);
   async function fetchFiles(project) {
     setLoading(true);
     const files = project.files;
@@ -34,6 +44,7 @@ const Home = () => {
       }
     }
     setLoading(false);
+
     navigate(`work/${project._id}`, {
       state: { data: responses, project: project },
     });
@@ -55,32 +66,32 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="h-full px-18 py-10">
-      <h1 className="text-3xl font-semibold text-gray-700">
-        Welcome Back! {user.username}
-      </h1>
-      <p className="text-xl mt-3 text-gray-700">Have a wonderful day!</p>
-      <div className="mt-5   pt-5">
-        <h1 className="text-5xl tracking-wider text-neutral-800 w-fit px-3 py-2 rounded-xl">
-          Your Works
+    <div className="h-full px-50 py-10 ">
+      <header className="w-full text-center ">
+        <h1 className="text-5xl">
+          Welcome Back! <b className="text-gray-500"> {user.username}</b>
         </h1>
+        <p className="text-3xl mt-4 text-gray-800">
+          Let's build something great today.
+        </p>
+      </header>
 
-        <div className="flex items-center justify-between h-screen w-full">
+      <div className="mt-16   pt-5">
+        <div className="w-full flex items-center justify-between mb-8">
+          <h1 className="text-5xl tracking-wider text-neutral-800 w-fit px-3 py-2 rounded-xl">
+            Your Works
+          </h1>
+          <button
+            className="button-primary flex items-center gap-4 text-xl"
+            onClick={() => navigate("new-project")}
+          >
+            <Plus size={30} className="transition-all duration-300 " />
+            Add New
+          </button>
+        </div>
+
+        <div className="flex  justify-between h-screen w-full">
           <div className="mt-8 grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 auto-rows-min h-full w-full  gap-5">
-            <button className="group relative flex flex-col items-center justify-center rounded-2xl border border-gray-600 bg-gradient-to-b from-neutral-800 to-neutral-700 p-6 text-white shadow-md transition-all duration-300 hover:scale-105 hover:border-neutral-500 hover:shadow-blue-500/20 cursor-pointer"
-            onClick={()=>navigate('new-project')}
-            >
-              <div className="flex h-20 w-20 items-center justify-center  rounded-full bg-neutral-600/40 transition-all duration-300 group-hover:bg-blue-500/20">
-                <Plus
-                  size={48}
-                  className="transition-all duration-300 "
-                />
-              </div>
-              <span className="mt-3 text-sm text-gray-300 transition-colors duration-300 group-hover:text-white">
-                Add New
-              </span>
-            </button>
-
             {!loading &&
               projects.map((element, index) => {
                 return (
@@ -98,76 +109,86 @@ const Home = () => {
                 );
               })}
           </div>
-          <div className="w-1/2 h-fit border rounded-xl border-gray-300 p-6 self-start shadow-md shadow-gray-200 bg-white flex flex-col gap-4">
+          <div className="w-full lg:w-1/2 h-fit rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-lg transition-all duration-300 p-6 flex flex-col gap-6">
             {cardDetails ? (
               <>
-                {/* Project Title */}
-                <div className="flex flex-col lg:flex-row  gap-4 lg:items-center justify-between border-b border-gray-200 pb-2">
-                  <h2 className="text-2xl text-neutral-800 font-semibold">
+                {/* Header */}
+                <div className="flex flex-col lg:flex-row gap-3 lg:itecdms-center justify-between border-b border-gray-100 pb-4">
+                  <h2 className="text-2xl font-semibold text-gray-800 tracking-tight">
                     {cardDetails.project_name}
                   </h2>
 
-                  {/* Action Buttons */}
+                  {/* Actions */}
                   <div className="flex gap-2">
                     <button
-                      className="px-3 py-1 text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-md transition-all"
-                      onClick={() => {
-                        setEditor(true);
-                      }}
+                      onClick={() => setEditor(true)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-all"
                     >
-                      Edit
+                      <Edit className="w-4 h-4" /> Edit
                     </button>
                     <button
-                      className="px-3 py-1 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-md transition-all"
                       onClick={() => setDeletion(true)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg shadow-sm transition-all"
                     >
-                      Delete
+                      <Trash2 className="w-4 h-4" /> Delete
                     </button>
                   </div>
                 </div>
 
                 {/* Description */}
-                <div className="flex flex-col ">
-                  <span className="font-semibold text-neutral-700">
-                    Project Description:
+                <div className="space-y-2">
+                  <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                    Description
                   </span>
-                  <p className="text-lg text-neutral-600 leading-relaxed">
+                  <p className="text-base text-gray-600 leading-relaxed">
                     {cardDetails.project_description.length > 150
                       ? `${cardDetails.project_description.slice(0, 150)}...`
                       : cardDetails.project_description}
                   </p>
                 </div>
 
-                {/* File Count */}
-                <div className="flex items-center  gap-2 text-lg mt-2">
-                  <span className="font-semibold text-neutral-700">Files:</span>
-                  <span className="text-neutral-500">
+                {/* File Info */}
+                <div className="flex items-center gap-2 text-base mt-1">
+                  <FileText className="w-4 h-4 text-gray-500" />
+                  <span className="font-semibold text-gray-700">Files:</span>
+                  <span className="text-gray-500">
                     {cardDetails.files.length}
                   </span>
                 </div>
 
-                {/* Dates Section */}
-                <div className="grid grid-cols-2 gap-3 mt-3 text-sm text-neutral-600">
-                  <div className="flex flex-col">
-                    <span className="font-semibold text-neutral-700">
-                      Created At:
+                {/* Meta Info */}
+                <div className="grid grid-cols-2 gap-5 mt-4 text-sm text-gray-600">
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-1.5">
+                      <CalendarDays className="w-4 h-4 text-gray-500" />
+                      <span className="font-semibold text-gray-700">
+                        Created
+                      </span>
+                    </div>
+                    <span className="text-gray-500">
+                      {cardDetails.createdAt.slice(0, 10)}
                     </span>
-                    <span>{cardDetails.createdAt.slice(0, 10)}</span>
                   </div>
-                  <div className="flex flex-col">
-                    <span className="font-semibold text-neutral-700">
-                      Updated At:
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-1.5">
+                      <Clock className="w-4 h-4 text-gray-500" />
+                      <span className="font-semibold text-gray-700">
+                        Last Updated
+                      </span>
+                    </div>
+                    <span className="text-gray-500">
+                      {cardDetails.updatedAt.slice(0, 10)}
                     </span>
-                    <span>{cardDetails.updatedAt.slice(0, 10)}</span>
                   </div>
                 </div>
               </>
             ) : (
-              <div className="text-center text-neutral-500 flex flex-col items-center justify-center py-8">
-                <span className="text-xl font-semibold">
+              <div className="text-center text-gray-400 flex flex-col items-center justify-center py-10">
+                <FileText className="w-12 h-12 text-gray-300 mb-3" />
+                <h3 className="text-lg font-semibold text-gray-600">
                   No Project Selected
-                </span>
-                <p className="mt-2 text-neutral-400">
+                </h3>
+                <p className="text-gray-400 mt-1">
                   Select a project to view its details
                 </p>
               </div>

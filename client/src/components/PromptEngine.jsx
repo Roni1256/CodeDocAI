@@ -1,4 +1,4 @@
-import { Brain, Send } from "lucide-react";
+import { Brain, Maximize2, Minimize2, Send } from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../App";
 import { axiosInstance } from "../utils/axiosInstance";
@@ -8,7 +8,7 @@ import rehypeRaw from "rehype-raw";
 import rehypeHighlight from "rehype-highlight";
 import "../markdownStyles.css";
 
-const PromptEngine = ({ files, project }) => {
+const PromptEngine = ({ files, project, botMaximize, setBotMaximize }) => {
   const [prompt, setPrompt] = useState("");
   const [user, setUser] = useContext(UserContext);
   const [allFiles, setAllFile] = useState(files || []);
@@ -65,16 +65,23 @@ const PromptEngine = ({ files, project }) => {
     retrieveChats();
   }, []);
   return (
-    <div className="w-full flex flex-col justify-between py-4 col-span-6  relative h-full">
-      <div className="flex w-full items-center">
+    <div className={`flex flex-col justify-between py-4 col-span-6  overflow-auto relative h-full  ${botMaximize?"bg-white ":"w-full"}`}>
+      <div className="flex w-full items-center justify-between border-b pb-2 border-gray-200">
         <div className="self-start flex items-center justify-between gap-3 text-neutral-600">
           <Brain size={30} />
           <h2 className="text-2xl ">Ask AI</h2>
         </div>
-        <div className=""></div>
+      
+          <button
+            className="border border-gray-300 rounded-xl bg-gray-200 hover:bg-white hover:border-gray-400 duration-300 ease-in-out transition-all p-2 h-fit w-fit cursor-pointer "
+            onClick={() => setBotMaximize(!botMaximize)}
+          >
+            {!botMaximize ? <Maximize2 size={20} /> : <Minimize2 size={20} />}
+          </button>
+        
       </div>
 
-      <div className="h-[60vh] w-full p-2 overflow-auto flex flex-col py-5 gap-y-8 self scrollbar-hide">
+      <div className="h-[60vh] w-full p-2 overflow-auto flex flex-col py-5 gap-y-8 self scrollbar-hide scroll-auto ">
         {!responses.length > 0 && !isGenerating && (
           <div className="w-full h-full flex items-center justify-center text-2xl text-neutral-600 flex-col select-none text-center">
             <span>Ask AI to Clarify and Generate</span>

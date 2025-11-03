@@ -171,3 +171,11 @@ export async function logout(req, res) {
     return res.status(500).json({ message: "Server error!" });
   }
 }
+
+export async function forgotPassword(req,res){
+  try {
+    
+  } catch (error) {
+    
+  }
+}

@@ -5,7 +5,7 @@ const ai = new GoogleGenAI({
 
 
 
-export default async function documentationGeneratorBot(fileContent) {
+export default async function documentationGeneratorBot(fileContent,file_name) {
   console.log("Entered to Analyzer");
 
   const documentationGeneratorBot_System = `You are "documentationGenerationBot", an AI specialized in software documentation generation and classification.
@@ -26,8 +26,9 @@ Your task:
   ],
   "documentation": "string (fully generated markdown documentation following the template)"
 }
-
+Note title is always the Filename:${file_name}
 Allowed section names for "template":
+-Title
 - Introduction
 - Overview
 - Base URL
@@ -108,6 +109,7 @@ ${fileContent}
                 section_name: {
                   type: Type.STRING,
                   enum: [
+                    "Title",
                     "Introduction",
                     "Overview",
                     "Base URL",

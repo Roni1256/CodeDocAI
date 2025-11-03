@@ -153,7 +153,7 @@ export async function addNewFile(req,res){
     const file_type=file.file_type
     console.log(file_content);
     
-    const output_content=await documentationGeneratorBot(file_content)
+    const output_content=await documentationGeneratorBot(file_content,file_name)
     
     const project=await Project.findById(projectId)
     if(!project)

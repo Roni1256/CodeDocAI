@@ -30,7 +30,7 @@ const NewProject = () => {
       }
     }
     setLoading(false);
-    navigate(`dashboard/work/${project._id}`, {
+    navigate(`/dashboard/work/${project._id}`, {
       state: { data: responses, project: project },
     });
   }
