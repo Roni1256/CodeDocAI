@@ -28,6 +28,7 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use(cookieParser());
 
+app.get("/",(req,res)=>{res.status(200).send("CodeDOC AI ")})
 
 app.use("/api/authentication", userRoute);
 app.use("/api/ai", aiRoute);
