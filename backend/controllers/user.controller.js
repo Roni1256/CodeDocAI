@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import { transportMail } from "../utils/mail.js";
+import path from "path";
 
 //--------------Registration
 export async function register(req, res) {
@@ -74,9 +75,10 @@ export async function verification(req, res) {
 
     res.cookie("codeDocToken", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: true,
+      sameSite: "none",
       maxAge: 30 * 24 * 60 * 60 * 1000,
+      path:"/"
     });
 
     return res
@@ -158,9 +160,11 @@ export async function login(req, res) {
 
     res.cookie("codeDocToken", jwtToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV == "production",
-      sameSite: "strict",
+      secure: true,
+      sameSite: "none",
       maxAge: 30 * 24 * 60 * 60 * 1000,
+      path:"/"
+    
     });
     console.log("Step-5");
 
