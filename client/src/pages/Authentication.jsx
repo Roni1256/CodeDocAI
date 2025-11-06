@@ -5,6 +5,7 @@ import { FaStarOfLife } from "react-icons/fa";
 import { data, useNavigate } from "react-router-dom";
 import { axiosInstance } from "../utils/axiosInstance.js";
 import { LoaderContext, UserContext } from "../App.jsx";
+import Loader from "../components/Loader.jsx";
 
 export default function Authentication() {
   const [formStatus, setFormStatus] = useState("register");
@@ -73,6 +74,9 @@ export default function Authentication() {
 
   return (
     <div className="bg-gray-100 flex flex-col gap-10 items-center justify-center p-20 w-full">
+      {loading && <div className=" flex items-center justify-center fixed top-0 left-0 h-screen w-full backdrop-blur-xs">
+        <Loader/>
+      </div>}
       <div className="bg-white px-5 py-10 h-fit rounded-lg border border-gray-300 shadow-lg w-[500px]">
         <div className="flex flex-col items-center gap-2 ">
           <div className="bg-gray-200 rounded-xl p-3 text-neutral-800">

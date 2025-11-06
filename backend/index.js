@@ -14,7 +14,7 @@ import testRoute from "./routes/sample.js"
 const app = express();
 
 dotenv.config();
-const PORT =process.env.PORT;
+const PORT =process.env.NODE_ENV==='production'?process.env.PORT:5000;
 const allowedOrigins=["https://code-doc-ai-theta.vercel.app","http://localhost:5173"]
 app.use(
   cors({

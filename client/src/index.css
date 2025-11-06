@@ -7,6 +7,9 @@
   .button-primary {
     @apply bg-gray-900 cursor-pointer text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-all duration-300 ease-in-out;
   }
+  .button-outlined {
+    @apply ring ring-gray-600 cursor-pointer text-neutral-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition-all duration-300 ease-in-out;
+  }
   .button-bar-side {
     @apply bg-gray-100 cursor-pointer text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 hover:text-gray-800 border border-gray-300 hover:border-gray-600 transition-all duration-300 ease-in-out ;
   }

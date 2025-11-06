@@ -66,7 +66,7 @@ const Verification = () => {
       console.log(resp);
       setUser(resp.data)
       navigate('/dashboard')
-      
+      window.location.reload()
       
     } catch (error) {
       console.log(error);

@@ -4,8 +4,6 @@ import {
   ChevronRight,
   Code,
   EllipsisVertical,
-  File,
-  LampCeiling,
   Maximize,
   Minimize,
   Minimize2,
@@ -34,6 +32,61 @@ import { LoaderContext } from "../App";
 import PromptEngine from "../components/PromptEngine";
 import FileDropZone from "../components/FileDropZone";
 import { CurrentProjectContext } from "./Dashboard";
+const fileTypes = {
+  js: "javascript",
+  jsx: "javascript",
+  ts: "typescript",
+  tsx: "typescript",
+  py: "python",
+  java: "java",
+  cpp: "cpp",
+  c: "c",
+  cs: "csharp",
+  php: "php",
+  rb: "ruby",
+  go: "go",
+  rs: "rust",
+  swift: "swift",
+  kt: "kotlin",
+  m: "objective-c",
+  scala: "scala",
+  dart: "dart",
+  r: "r",
+  sh: "shell",
+  bash: "shell",
+  pl: "perl",
+  lua: "lua",
+  sql: "sql",
+  html: "html",
+  htm: "html",
+  css: "css",
+  scss: "scss",
+  sass: "scss",
+  json: "json",
+  xml: "xml",
+  yaml: "yaml",
+  yml: "yaml",
+  md: "markdown",
+  tex: "latex",
+  ipynb: "python",
+  ps1: "powershell",
+  vb: "vb",
+  asm: "asm",
+  h: "cpp", // header files often treated as C/C++
+  vue: "vue",
+  svelte: "svelte",
+  sol: "solidity",
+  dockerfile: "dockerfile",
+  makefile: "makefile",
+  bat: "bat",
+  toml: "toml",
+  ini: "ini",
+  conf: "ini",
+  env: "ini",
+  graphql: "graphql",
+  prisma: "prisma",
+  proto: "protobuf",
+};
 
 const Workspace = () => {
   const navigation = useNavigate();
@@ -70,7 +123,8 @@ const Workspace = () => {
   const [maximize, setMaximize] = useState(false);
   const [botMaximize, setBotMaximize] = useState(false);
   const [currentProject, setCurrentProject] = useContext(CurrentProjectContext);
-  const [isOptionToggle, setOptionToggle] = useState(true);
+  const [isOptionToggle, setOptionToggle] = useState(false);
+  const [currentFileType, setCurrentFileType] = useState();
   const handleEditorChange = (value) => {
     if (!isDocument) setCode(value);
     else setCurrentDocument(value);
@@ -84,10 +138,17 @@ const Workspace = () => {
         `/project/get-files/${project._id}`,
         { files: files }
       );
+      console.log(resp.data.files);
 
       setData(resp.data.files);
       setCurrentDocument(resp.data.files[currentIndex].output_content);
       setCode(resp.data.files[currentIndex].file_content);
+      const fileType =
+        resp.data.files[currentIndex].file_name.split(".")[
+          resp.data.files[currentIndex].file_name.split(".").length - 1
+        ];
+      setCurrentFileType(fileTypes[fileType]);
+      console.log(fileTypes[fileType]);
     } catch (error) {
       setLoading(false);
       console.log(error);
@@ -400,7 +461,7 @@ const Workspace = () => {
             height={"100vh"}
             width={"100%"}
             theme="dracula"
-            language="javascript"
+            language={currentFileType}
             onChange={handleEditorChange}
             options={{
               wordWrap: "wordWrapColumn",
@@ -461,6 +522,13 @@ const Workspace = () => {
                   setCurrentIndex(i);
                   setCode(data[currentIndex].file_content);
                   setCurrentDocument(data[currentIndex].output_content);
+                  const fileType =
+                    data[currentIndex].file_name.split(".")[
+                      data[currentIndex].file_name.split(".")
+                        .length - 1
+                    ];
+                  setCurrentFileType(fileTypes[fileType]);
+                  console.log(fileTypes[fileType]);
                 }}
               >
                 {element.file_name}
@@ -542,18 +610,23 @@ const Workspace = () => {
                 isOn={isEditDocument}
                 setOn={setEditDocument}
               />
-              <button
+              {/* <button
                 className="hover:bg-gray-100 rounded-full p-2 cursor-pointer"
                 onClick={() => setOptionToggle(!isOptionToggle)}
               >
                 <EllipsisVertical />
-              </button>
+              </button> */}
               {isOptionToggle && (
                 <div className="bg-white border border-gray-300 rounded-xl flex flex-col absolute  h-[300px] top-15 z-50 right-0 p-3 gap-3">
                   <span className=" text-gray-500">Options</span>
                   <div className="flex flex-col items-center w-full">
-                    <button className="hover:bg-gray-100  rounded-lg w-full p-2 px-15"
-                    onClick={()=>navigation("templated-edit",{state:{data: data, project: project}})}
+                    <button
+                      className="hover:bg-gray-100  rounded-lg w-full p-2 px-15"
+                      onClick={() =>
+                        navigation("templated-edit", {
+                          state: { data: data, project: project },
+                        })
+                      }
                     >
                       Template Edit
                     </button>
@@ -608,7 +681,7 @@ const Workspace = () => {
             height="70vh"
             width={"100%"}
             theme="dracula"
-            language="javascript"
+            language={currentFileType}
             onChange={handleEditorChange}
             options={{
               wordWrap: "wordWrapColumn",

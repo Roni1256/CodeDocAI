@@ -3,17 +3,20 @@ import React from "react";
 import { axiosInstance } from "../utils/axiosInstance";
 
 const DeletionPop = ({
-  project_name = "sample",
+  project_name = "",
   userId,
   projectId,
   setDeletion,
+  fetchProjects
 }) => {
   async function deleteProject() {
     try {
       const resp = await axiosInstance.delete(
         `/project/delete/${userId}/${projectId}`
       );
-      console.log(resp);
+      fetchProjects()
+      setDeletion(false);
+      
     } catch (error) {
       console.log(error);
     }
@@ -41,10 +44,8 @@ const DeletionPop = ({
           Note: This action cannot be reverted.
         </span>
         <button
-          className="bg-red-500 text-white text-lg py-2 rounded-lg w-full mt-4 "
-          onClick={() => {
-            deleteProject();
-          }}
+          className="bg-red-500 text-white text-lg py-2 rounded-lg w-full mt-4 cursor-pointer"
+          onClick={deleteProject}
         >
           Delete
         </button>
