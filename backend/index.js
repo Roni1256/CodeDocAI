@@ -15,10 +15,18 @@ const app = express();
 
 dotenv.config();
 const PORT =process.env.PORT;
-
+const allowedOrigins=["https://code-doc-ai-theta.vercel.app","http://localhost:5173"]
 app.use(
   cors({
-    origin: ["https://code-doc-ai-theta.vercel.app"],
+    origin: (origin,callback)=>{
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
     credentials: true,
