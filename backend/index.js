@@ -15,7 +15,7 @@ const app = express();
 
 dotenv.config();
 const PORT =process.env.NODE_ENV==='production'?process.env.PORT:5000;
-const allowedOrigins=["https://code-doc-ai-theta.vercel.app","http://localhost:5173","https://code-doc-smart-ai.vercel.app/"]
+const allowedOrigins=["https://code-doc-ai-theta.vercel.app","http://localhost:5173","https://code-doc-smart-ai.vercel.app"]
 app.use(
   cors({
     origin: (origin,callback)=>{
